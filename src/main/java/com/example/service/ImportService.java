@@ -6,8 +6,8 @@ import com.example.model.Product;
 import com.example.repository.CategoryRepository;
 import com.example.repository.PriceRepository;
 import com.example.repository.ProductRepository;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
+/*import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;*/
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +28,7 @@ public class ImportService {
     private final CategoryRepository categoryRepository;
 
     public void importProductsFromCsv(MultipartFile file) {
-        try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+        /*try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             // Парсинг CSV в список объектов ProductImportDTO
             CsvToBean<ProductImportDTO> csvToBean = new CsvToBeanBuilder<ProductImportDTO>(reader)
                     .withType(ProductImportDTO.class)
@@ -58,5 +58,6 @@ public class ImportService {
 
     public void importPricesFromJson(MultipartFile file) {
         // Логика парсинга JSON и добавления цен
+        */
     }
 }
