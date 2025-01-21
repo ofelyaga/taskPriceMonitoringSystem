@@ -17,19 +17,9 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "roles", ignore = true)
     User toEntity(UserDTO userDTO);
 
-    @Mapping(target = "roleIds", source = "roles")
     UserDTO toDTO(User user);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", ignore = true)
     void updateEntity(UserDTO userDTO, @MappingTarget User user);
-
-    default Set<UUID> mapRolesToRoleIds(Set<Role> roles) {
-        return roles.stream()
-                .map(Role::getId)
-                .collect(Collectors.toSet());
-    }
 }

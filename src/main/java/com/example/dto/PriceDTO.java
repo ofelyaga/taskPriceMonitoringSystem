@@ -6,9 +6,9 @@ import java.util.UUID;
 
 @Data
 public class PriceDTO {
-    private UUID id;
-    private Double value;
-    private LocalDate date;
-    private UUID productId;
-    private UUID storeId;
+    public UUID id;
+    public Double value;
+    public LocalDate date;
+    public UUID productId;
+    public UUID storeId;
 }

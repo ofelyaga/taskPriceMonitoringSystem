@@ -11,8 +11,4 @@ public interface PriceTrendMapper {
     PriceTrendMapper INSTANCE = Mappers.getMapper(PriceTrendMapper.class);
 
     PriceTrendDTO toDTO(Price price);
-
-    default PriceTrendDTO mapToPriceTrendDTO(Price price) {
-        return new PriceTrendDTO(price.getDate(), price.getValue());
-    }
 }

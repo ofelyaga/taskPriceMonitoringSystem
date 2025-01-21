@@ -25,7 +25,7 @@ public class ImportController {
     @PostMapping("/prices/json")
     @ResponseBody
     public ResponseEntity<Void> importPricesFromJson(@RequestParam("file") MultipartFile file) {
-        importService.importPricesFromJson(file);
+       // importService.importPricesFromJson(file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

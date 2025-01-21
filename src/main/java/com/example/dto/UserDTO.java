@@ -1,6 +1,8 @@
 package com.example.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 import java.util.UUID;
@@ -19,5 +21,5 @@ public class UserDTO {
 
     private String phone;
 
-    private Set<UUID> roleIds; // Список ID ролей
+    private Set<UUID> roleIds;
 }

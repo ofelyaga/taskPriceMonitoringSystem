@@ -1,22 +1,26 @@
 package com.example.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "prices", indexes = {
-        @Index(name = "idx_price_product", columnList = "product_id"),
-        @Index(name = "idx_price_store", columnList = "store_id")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "price_history", indexes = {
+        @Index(name = "idx_price_product", columnList = "product"),
+        @Index(name = "idx_price_shop", columnList = "shop")
 })
 @Data
 public class Price {
     @Id
     @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    //@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
     private UUID id;
 
@@ -26,11 +30,11 @@ public class Price {
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "product", table = "products", referencedColumnName = "id")
     private Product product;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "shop", table = "shops", referencedColumnName = "id")
     private Store store;
 }

@@ -16,6 +16,5 @@ public interface StoreMapper {
 
     StoreDTO toDTO(Store store);
 
-    @Mapping(target = "id", ignore = true) // Игнорируем ID, так как он не должен обновляться
     void updateEntity(StoreDTO storeDTO, @MappingTarget Store store);
 }

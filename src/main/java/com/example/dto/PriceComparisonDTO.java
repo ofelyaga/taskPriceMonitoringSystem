@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PriceComparisonDTO {
-    private LocalDate date;
-    private Double value;
-    private String storeName; // Название магазина для сравнения
+    public LocalDate date;
+    public Double value;
+    public String storeName; // Название магазина для сравнения
 }

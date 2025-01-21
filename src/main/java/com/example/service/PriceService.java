@@ -5,6 +5,7 @@ import com.example.mapper.PriceMapper;
 import com.example.model.Price;
 import com.example.repository.PriceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,10 +14,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class PriceService {
     private final PriceRepository priceRepository;
     private final PriceMapper priceMapper;
+
+    @Autowired
+    public PriceService(PriceRepository priceRepository, PriceMapper priceMapper){
+        this.priceRepository = priceRepository;
+        this.priceMapper = priceMapper;
+    }
 
     public PriceDTO addPrice(PriceDTO priceDTO) {
         Price price = priceMapper.toEntity(priceDTO);
