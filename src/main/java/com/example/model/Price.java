@@ -31,10 +31,10 @@ public class Price {
     private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product", table = "products", referencedColumnName = "id")
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "shop", table = "shops", referencedColumnName = "id")
+    @JoinColumn(name = "shop_id", referencedColumnName = "id")
     private Store store;
 }

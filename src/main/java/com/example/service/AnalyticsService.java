@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class AnalyticsService {
     private final PriceRepository priceRepository;
+
     private final PriceTrendMapper priceTrendMapper;
 
     @Autowired
