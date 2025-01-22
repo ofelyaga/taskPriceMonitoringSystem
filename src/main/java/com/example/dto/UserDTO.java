@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
     private UUID id;
 
@@ -18,6 +20,8 @@ public class UserDTO {
     private String email;
 
     private String password;
+
+    private String confirmPassword;
 
     private String phone;
 

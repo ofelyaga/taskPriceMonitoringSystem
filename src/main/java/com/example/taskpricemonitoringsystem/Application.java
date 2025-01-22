@@ -2,7 +2,7 @@ package com.example.taskpricemonitoringsystem;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletRegistration;
-import org.example.config.WebConfig;
+import com.example.config.WebConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;

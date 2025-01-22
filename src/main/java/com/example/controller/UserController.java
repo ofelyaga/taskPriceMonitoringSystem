@@ -14,14 +14,17 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/api/users")
 public class UserController {
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
-        UserDTO savedUser = userService.registerUser(userDTO);
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
+        UserDTO savedUser = userService.createNewUser(userDTO);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -41,4 +44,6 @@ public class UserController {
         userService.deleteUser(UUID.fromString(userId));
         return ResponseEntity.noContent().build();
     }
+
+
 }

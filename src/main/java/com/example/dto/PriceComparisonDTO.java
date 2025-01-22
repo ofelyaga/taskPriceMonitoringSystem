@@ -12,5 +12,5 @@ import java.time.LocalDate;
 public class PriceComparisonDTO {
     public LocalDate date;
     public Double value;
-    public String storeName; // Название магазина для сравнения
+    public String storeName;
 }

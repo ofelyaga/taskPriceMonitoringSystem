@@ -18,8 +18,7 @@ import java.util.stream.Collectors;
 public class JwtCore {
     @Value("${jwt.secret}")
     private String secret;
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private long expiration = 360000;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
