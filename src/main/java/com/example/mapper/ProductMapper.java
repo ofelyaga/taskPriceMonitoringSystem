@@ -1,31 +1,42 @@
 package com.example.mapper;
 
 import com.example.dto.ProductDTO;
-import com.example.model.Category;
 import com.example.model.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
+import com.example.model.Category;
 
-import java.util.UUID;
+public class ProductMapper {
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class})
-public interface ProductMapper {
+    public static Product toEntity(ProductDTO productDTO){
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setManufacturer(productDTO.getManufacturer());
 
-    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
-    Product toEntity(ProductDTO productDTO);
-
-    ProductDTO toDTO(Product product);
-
-    void updateEntity(ProductDTO productDTO, @MappingTarget Product product);
-
-    default Category mapCategoryIdToCategory(UUID categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
         Category category = new Category();
-        category.setId(categoryId);
-        return category;
+        category.setId(productDTO.getCategoryId());
+        product.setCategory(category);
+
+        return product;
+    }
+
+    public static ProductDTO toDTO(Product product){
+        return new ProductDTO(
+                product.getId(),
+                product.getName(),
+                product.getManufacturer(),
+                product.getCategory().getId()
+        );
+    }
+    public static void updateEntity(Product product, ProductDTO productDTO) {
+        if (productDTO.getName() != null) {
+            product.setName(productDTO.getName());
+        }
+        if (productDTO.getManufacturer() != null) {
+            product.setManufacturer(productDTO.getManufacturer());
+        }
+        if (productDTO.getCategoryId() != null) {
+            Category category = new Category();
+            category.setId(productDTO.getCategoryId());
+            product.setCategory(category);
+        }
     }
 }

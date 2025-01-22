@@ -15,20 +15,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
 
     public ProductDTO addProduct(ProductDTO productDTO) {
-        Product product = productMapper.toEntity(productDTO);
+        Product product = ProductMapper.toEntity(productDTO);
         Product savedProduct = productRepository.save(product);
-        return productMapper.toDTO(savedProduct);
+        return ProductMapper.toDTO(savedProduct);
     }
 
     public ProductDTO updateProduct(UUID productId, ProductDTO updatedProductDTO) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        productMapper.updateEntity(updatedProductDTO, product);
+        ProductMapper.updateEntity(product,updatedProductDTO);
         Product updatedProduct = productRepository.save(product);
-        return productMapper.toDTO(updatedProduct);
+        return ProductMapper.toDTO(updatedProduct);
     }
 
     public void deleteProduct(UUID productId) {
@@ -37,19 +36,19 @@ public class ProductService {
 
     public List<ProductDTO> getProductsByCategory(UUID categoryId) {
         return productRepository.findByCategoryId(categoryId).stream()
-                .map(productMapper::toDTO)
+                .map(ProductMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDTO> searchProductsByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name).stream()
-                .map(productMapper::toDTO)
+                .map(ProductMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ProductDTO> filterProductsByManufacturer(String manufacturer) {
         return productRepository.findByManufacturerContainingIgnoreCase(manufacturer).stream()
-                .map(productMapper::toDTO)
+                .map(ProductMapper::toDTO)
                 .collect(Collectors.toList());
     }
 

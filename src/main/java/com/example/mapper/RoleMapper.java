@@ -1,19 +1,26 @@
 package com.example.mapper;
 
-import com.example.dto.PriceDTO;
 import com.example.dto.RoleDTO;
-import com.example.model.Price;
 import com.example.model.Role;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
-public interface RoleMapper {
+public class RoleMapper {
 
-    RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
+    public static Role toEntity(RoleDTO roleDTO) {
+        Role role = new Role();
+        role.setName(roleDTO.getName());
+        return role;
+    }
 
-    Role toEntity(RoleDTO roleDTO);
+    public static RoleDTO toDTO(Role role) {
+        return new RoleDTO(
+                role.getId(),
+                role.getName()
+        );
+    }
 
-    RoleDTO toDTO(Role role);
+    public static void updateEntity(Role role, RoleDTO roleDTO) {
+        if (roleDTO.getName() != null) {
+            role.setName(roleDTO.getName());
+        }
+    }
 }

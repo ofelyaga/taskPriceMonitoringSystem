@@ -15,26 +15,24 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper){
+    public CategoryService(CategoryRepository categoryRepository){
         this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
     }
 
     public CategoryDTO addCategory(CategoryDTO categoryDTO) {
-        Category category = categoryMapper.toEntity(categoryDTO);
+        Category category = CategoryMapper.toEntity(categoryDTO);
         Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.toDTO(savedCategory);
+        return CategoryMapper.toDTO(savedCategory);
     }
 
     public CategoryDTO updateCategory(UUID categoryId, CategoryDTO updatedCategoryDTO) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-        categoryMapper.updateEntity(updatedCategoryDTO, category);
+        CategoryMapper.updateEntity(category, updatedCategoryDTO);
         Category updatedCategory = categoryRepository.save(category);
-        return categoryMapper.toDTO(updatedCategory);
+        return CategoryMapper.toDTO(updatedCategory);
     }
 
     public void deleteCategory(UUID categoryId) {
@@ -43,7 +41,7 @@ public class CategoryService {
 
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .map(categoryMapper::toDTO)
+                .map(CategoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

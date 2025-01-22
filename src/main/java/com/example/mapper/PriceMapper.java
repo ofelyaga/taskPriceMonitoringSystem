@@ -4,20 +4,31 @@ import com.example.dto.PriceDTO;
 import com.example.model.Price;
 import com.example.model.Product;
 import com.example.model.Store;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
-import java.util.UUID;
+public class PriceMapper {
 
-@Mapper(componentModel = "spring", uses = {ProductMapper.class, StoreMapper.class})
-public interface PriceMapper {
+    public static Price toEntity(PriceDTO priceDTO) {
+        Price price = new Price();
+        price.setValue(priceDTO.getValue());
+        price.setDate(priceDTO.getDate());
+        Product product = new Product();
+        product.setId(priceDTO.getProductId());
+        price.setProduct(product);
+        Store store = new Store();
+        store.setId(priceDTO.getStoreId());
+        price.setStore(store);
 
-    PriceMapper INSTANCE = Mappers.getMapper(PriceMapper.class);
+        return price;
+    }
 
-    Price toEntity(PriceDTO priceDTO);
-    PriceDTO toDTO(Price price);
+    public static PriceDTO toDTO(Price price) {
+        return new PriceDTO(
+                price.getId(),
+                price.getValue(),
+                price.getDate(),
+                price.getProduct().getId(),
+                price.getStore().getId()
+        );
+    }
 
-    void updateEntity(PriceDTO priceDTO, @MappingTarget Price price);
 }

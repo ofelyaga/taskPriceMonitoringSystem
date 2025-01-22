@@ -15,20 +15,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
-    private final StoreMapper storeMapper;
 
     public StoreDTO addStore(StoreDTO storeDTO) {
-        Store store = storeMapper.toEntity(storeDTO);
+        Store store = StoreMapper.toEntity(storeDTO);
         Store savedStore = storeRepository.save(store);
-        return storeMapper.toDTO(savedStore);
+        return StoreMapper.toDTO(savedStore);
     }
 
     public StoreDTO updateStore(UUID storeId, StoreDTO updatedStoreDTO) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found"));
-        storeMapper.updateEntity(updatedStoreDTO, store);
+        StoreMapper.updateEntity(store, updatedStoreDTO);
         Store updatedStore = storeRepository.save(store);
-        return storeMapper.toDTO(updatedStore);
+        return StoreMapper.toDTO(updatedStore);
     }
 
     public void deleteStore(UUID storeId) {
@@ -37,7 +36,7 @@ public class StoreService {
 
     public List<StoreDTO> getAllStores() {
         return storeRepository.findAll().stream()
-                .map(storeMapper::toDTO)
+                .map(StoreMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

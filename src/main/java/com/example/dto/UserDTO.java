@@ -21,9 +21,9 @@ public class UserDTO {
 
     private String password;
 
-    private String confirmPassword;
-
     private String phone;
 
     private Set<UUID> roleIds;
+
+
 }

@@ -2,10 +2,10 @@ package com.example.service;
 
 import com.example.dto.PriceChartDTO;
 import com.example.dto.PriceComparisonDTO;
+import com.example.dto.PriceDTO;
 import com.example.dto.PriceTrendDTO;
-import com.example.mapper.PriceTrendMapper;
+import com.example.mapper.PriceMapper;
 import com.example.repository.PriceRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +18,15 @@ import java.util.stream.Collectors;
 public class AnalyticsService {
     private final PriceRepository priceRepository;
 
-    private final PriceTrendMapper priceTrendMapper;
 
     @Autowired
-    public AnalyticsService(PriceRepository priceRepository, PriceTrendMapper priceTrendMapper){
+    public AnalyticsService(PriceRepository priceRepository){
         this.priceRepository = priceRepository;
-        this.priceTrendMapper = priceTrendMapper;
     }
 
-    public List<PriceTrendDTO> getPriceTrends(UUID productId, UUID storeId, LocalDate startDate, LocalDate endDate) {
+    public List<PriceDTO> getPriceTrends(UUID productId, UUID storeId, LocalDate startDate, LocalDate endDate) {
         return priceRepository.findByProductIdAndStoreIdAndDateBetween(productId, storeId, startDate, endDate).stream()
-                .map(priceTrendMapper::toDTO)
+                .map(PriceMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -40,15 +38,15 @@ public class AnalyticsService {
     }
 
     public PriceChartDTO getPriceChartData(UUID productId, UUID storeId, LocalDate startDate, LocalDate endDate) {
-        List<PriceTrendDTO> priceTrends = getPriceTrends(productId, storeId, startDate, endDate);
+        List<PriceDTO> priceTrends = getPriceTrends(productId, storeId, startDate, endDate);
 
         List<String> dates = priceTrends.stream()
-                .map(PriceTrendDTO::getDate)
+                .map(PriceDTO::getDate)
                 .map(LocalDate::toString)
                 .collect(Collectors.toList());
 
         List<Double> prices = priceTrends.stream()
-                .map(PriceTrendDTO::getValue)
+                .map(PriceDTO::getValue)
                 .collect(Collectors.toList());
 
         return new PriceChartDTO(dates, prices);

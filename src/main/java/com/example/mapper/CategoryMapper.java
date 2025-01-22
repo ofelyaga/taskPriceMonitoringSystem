@@ -2,19 +2,26 @@ package com.example.mapper;
 
 import com.example.dto.CategoryDTO;
 import com.example.model.Category;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public class CategoryMapper {
 
-    CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
+    public static Category toEntity(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        category.setName(categoryDTO.getName());
+        return category;
+    }
 
-    Category toEntity(CategoryDTO categoryDTO);
+    ;
 
-    CategoryDTO toDTO(Category category);
+    public static CategoryDTO toDTO(Category category) {
+        return new CategoryDTO(category.getId(), category.getName());
+    }
 
-    void updateEntity(CategoryDTO categoryDTO, @MappingTarget Category category);
+    ;
+
+    public static void updateEntity(Category category, CategoryDTO categoryDTO) {
+        if (categoryDTO.getName() != null) {
+            category.setName(categoryDTO.getName());
+        }
+    }
 }

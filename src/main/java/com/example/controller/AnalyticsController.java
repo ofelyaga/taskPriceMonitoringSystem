@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.dto.PriceChartDTO;
 import com.example.dto.PriceComparisonDTO;
-import com.example.dto.PriceTrendDTO;
+import com.example.dto.PriceDTO;
 import com.example.service.AnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class AnalyticsController {
 
     @GetMapping("/trends")
     @ResponseBody
-    public ResponseEntity<List<PriceTrendDTO>> getPriceTrends(
+    public ResponseEntity<List<PriceDTO>> getPriceTrends(
             @RequestParam UUID productId,
             @RequestParam String storeId,
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate
     ) {
-        List<PriceTrendDTO> priceTrends = analyticsService.getPriceTrends(productId, UUID.fromString(storeId), startDate, endDate);
+        List<PriceDTO> priceTrends = analyticsService.getPriceTrends(productId, UUID.fromString(storeId), startDate, endDate);
         return ResponseEntity.ok(priceTrends);
     }
 
