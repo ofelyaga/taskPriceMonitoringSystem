@@ -26,4 +26,9 @@ public class UserDTO {
     private Set<UUID> roleIds;
 
 
+    public UserDTO(UUID id, String firstName, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.email = email;
+    }
 }
