@@ -20,7 +20,6 @@ import java.util.UUID;
 public class Price {
     @Id
     @GeneratedValue(generator = "UUID")
-    //@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false)
     private UUID id;
 

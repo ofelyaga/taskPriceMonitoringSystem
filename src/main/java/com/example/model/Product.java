@@ -16,7 +16,6 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue(generator = "UUID")
-   // @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(updatable = false, nullable = false, name = "id")
     private UUID id;
 
@@ -24,9 +23,9 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private String manufacturer; // Производитель
+    private String manufacturer;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category; // Категория товара
+    private Category category;
 }

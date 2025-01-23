@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public ProductDTO addProduct(ProductDTO productDTO) {
+        Optional<Product> existingProduct = productRepository.findByNameAndManufacturerAndCategoryId(
+                productDTO.getName(),
+                productDTO.getManufacturer(),
+                productDTO.getCategoryId()
+        );
+        if (existingProduct.isPresent()) {
+            return ProductMapper.toDTO(existingProduct.get());
+        }
         Product product = ProductMapper.toEntity(productDTO);
         Product savedProduct = productRepository.save(product);
         return ProductMapper.toDTO(savedProduct);
