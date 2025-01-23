@@ -36,9 +36,9 @@ public class Config {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/monitoring");
+        dataSource.setUrl("jdbc:postgresql://db:5432/monitoring");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("root");
+        dataSource.setPassword("postgres");
         return dataSource;
     }
 
