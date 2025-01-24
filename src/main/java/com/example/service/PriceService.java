@@ -89,4 +89,18 @@ public class PriceService {
             throw new AppException("Ошибка при добавлении цены", e);
         }
     }
+
+    public List<PriceDTO> getAllPrices() {
+        try {
+            logger.info("Запрос на получение всех категорий");
+            List<PriceDTO> prices = priceRepository.findAll().stream()
+                    .map(PriceMapper::toDTO)
+                    .collect(Collectors.toList());
+            logger.info("Успешно получены все категории: количество = {}", prices.size());
+            return prices;
+        } catch (Exception e) {
+            logger.error("Ошибка при получении всех категорий", e);
+            throw new AppException("Ошибка при получении всех категорий", e);
+        }
+    }
 }

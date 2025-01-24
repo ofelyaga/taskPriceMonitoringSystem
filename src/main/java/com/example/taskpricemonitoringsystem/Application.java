@@ -11,8 +11,8 @@ public class Application extends AbstractAnnotationConfigDispatcherServletInitia
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static final String UPLOAD_DIRECTORY = System.getProperty("C://tmp");
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
-    private static final long MAX_REQUEST_SIZE = MAX_FILE_SIZE * 2;
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    private static final long MAX_REQUEST_SIZE = MAX_FILE_SIZE * 2; // 10MB
     private static final int FILE_SIZE_THRESHOLD = 0;
 
     @Override

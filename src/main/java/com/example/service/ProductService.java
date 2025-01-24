@@ -132,4 +132,18 @@ public class ProductService {
             throw new AppException("Ошибка при фильтрации продуктов по производителю", e);
         }
     }
+
+    public List<ProductDTO> getAllProducts() {
+        try {
+            logger.info("Запрос на получение всех категорий");
+            List<ProductDTO> products = productRepository.findAll().stream()
+                    .map(ProductMapper::toDTO)
+                    .collect(Collectors.toList());
+            logger.info("Успешно получены все категории: количество = {}", products.size());
+            return products;
+        } catch (Exception e) {
+            logger.error("Ошибка при получении всех категорий", e);
+            throw new AppException("Ошибка при получении всех категорий", e);
+        }
+    }
 }

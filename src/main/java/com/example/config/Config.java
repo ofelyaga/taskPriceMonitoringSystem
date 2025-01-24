@@ -15,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Map;
 import java.util.Properties;
 
 @Configuration
@@ -34,11 +35,17 @@ public class Config {
 
     @Bean
     public DataSource dataSource() {
+        Map<String, String> env = System.getenv();
+        String dbHost = env.getOrDefault("DB_HOST", "localhost");
+        String dbUser = env.getOrDefault("DB_USER", "postgres");
+        String dbPassword = env.getOrDefault("DB_PASSWORD", "root");
+        String dbName = env.getOrDefault("DB_NAME", "monitoring");
+
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://db:5432/monitoring");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("postgres");
+        dataSource.setUrl("jdbc:postgresql://" + dbHost + ":5432/" + dbName);
+        dataSource.setUsername(dbUser);
+        dataSource.setPassword(dbPassword);
         return dataSource;
     }
 
