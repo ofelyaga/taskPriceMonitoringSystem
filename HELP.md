@@ -10,12 +10,16 @@ Docker 20.10+
 Docker Compose 2.20+
 
 2. Сборка приложения
+
 Клонируйте репозиторий:
+
 git clone <ваш-репозиторий>
 
 cd taskpricemonitoringsystem
+
 Соберите WAR-файл:
-mvn clean package -DskipTests 
+
+mvn clean package
 
 Результат: target/taskpricemonitoringsystem-1.0-SNAPSHOT.war
 
