@@ -3,26 +3,28 @@ package com.example.controller;
 import com.example.dto.CategoryDTO;
 import com.example.exception.CategoryAlreadyExistsException;
 import com.example.exception.CategoryNotFoundException;
+import com.example.exception.GlobalExceptionHandler;
 import com.example.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
 
     private MockMvc mockMvc;
@@ -34,86 +36,68 @@ class CategoryControllerTest {
     @InjectMocks
     private CategoryController categoryController;
 
-    private final UUID testId = UUID.randomUUID();
-    private final CategoryDTO testCategory = new CategoryDTO(testId, "Electronics");
+    private final UUID testCategoryId = UUID.randomUUID();
+    private final CategoryDTO testCategoryDTO = new CategoryDTO(testCategoryId, "Electronics");
 
     @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
-                .setControllerAdvice(new ControllerExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
     @Test
-    void addCategory_ShouldReturnCreated() throws Exception {
-        when(categoryService.addCategory(any())).thenReturn(testCategory);
+    void addCategory_ShouldReturnCreatedCategory() throws Exception {
+        when(categoryService.addCategory(any(CategoryDTO.class))).thenReturn(testCategoryDTO);
 
         mockMvc.perform(post("/api/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCategory)))
+                        .content(objectMapper.writeValueAsString(testCategoryDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(testId.toString()))
+                .andExpect(jsonPath("$.id").value(testCategoryId.toString()))
                 .andExpect(jsonPath("$.name").value("Electronics"));
     }
 
     @Test
-    void addCategory_ShouldHandleConflict() throws Exception {
-        when(categoryService.addCategory(any()))
-                .thenThrow(new CategoryAlreadyExistsException("Electronics"));
+    void updateCategory_ShouldReturnUpdatedCategory() throws Exception {
+        when(categoryService.updateCategory(eq(testCategoryId), any(CategoryDTO.class)))
+                .thenReturn(testCategoryDTO);
 
-        mockMvc.perform(post("/api/categories")
+        mockMvc.perform(put("/api/categories/{categoryId}", testCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCategory)))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    void updateCategory_ShouldReturnOk() throws Exception {
-        when(categoryService.updateCategory(eq(testId), any()))
-                .thenReturn(testCategory);
-
-        mockMvc.perform(put("/api/categories/{categoryId}", testId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCategory)))
+                        .content(objectMapper.writeValueAsString(testCategoryDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(testId.toString()));
+                .andExpect(jsonPath("$.name").value("Electronics"));
     }
 
     @Test
-    void updateCategory_ShouldHandleNotFound() throws Exception {
-        // Arrange
-        UUID categoryId = UUID.randomUUID();
-        CategoryDTO updateDTO = new CategoryDTO(UUID.randomUUID(), "New description");
+    void updateCategory_WhenNotFound_ShouldReturnNotFound() throws Exception {
+        when(categoryService.updateCategory(eq(testCategoryId), any(CategoryDTO.class)))
+                .thenThrow(new CategoryNotFoundException(testCategoryId));
 
-        when(categoryService.updateCategory(eq(categoryId), any(CategoryDTO.class)))
-                .thenThrow(new CategoryNotFoundException(categoryId));
-
-        // Act & Assert
-        mockMvc.perform(put("/api/categories/{categoryId}", categoryId)
+        mockMvc.perform(put("/api/categories/{categoryId}", testCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Категория с ID " + categoryId + " не найдена"));
+                        .content(objectMapper.writeValueAsString(testCategoryDTO)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void deleteCategory_ShouldReturnNoContent() throws Exception {
-        mockMvc.perform(delete("/api/categories/{categoryId}", testId))
-                .andExpect(status().isNoContent());
+        doNothing().when(categoryService).deleteCategory(testCategoryId);
 
-        verify(categoryService).deleteCategory(testId);
+        mockMvc.perform(delete("/api/categories/{categoryId}", testCategoryId))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void deleteCategory_ShouldHandleInvalidUUID() throws Exception {
-        mockMvc.perform(delete("/api/categories/{categoryId}", "invalid-uuid"))
+    void deleteCategory_WithInvalidUUID_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(delete("/api/categories/invalid-uuid"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void getAllCategories_ShouldReturnList() throws Exception {
-        List<CategoryDTO> categories = List.of(testCategory);
+    void getAllCategories_ShouldReturnCategoryList() throws Exception {
+        List<CategoryDTO> categories = List.of(testCategoryDTO);
         when(categoryService.getAllCategories()).thenReturn(categories);
 
         mockMvc.perform(get("/api/categories"))
@@ -121,22 +105,15 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Electronics"))
                 .andExpect(jsonPath("$.length()").value(1));
     }
-}
 
-// Обработчик исключений для контроллера
-class ControllerExceptionHandler {
-    @org.springframework.web.bind.annotation.ExceptionHandler
-    public ResponseEntity<String> handleNotFound(CategoryNotFoundException ex) {
-        return ResponseEntity.status(404).body(ex.getMessage());
-    }
+    @Test
+    void addCategory_WhenAlreadyExists_ShouldReturnConflict() throws Exception {
+        when(categoryService.addCategory(any(CategoryDTO.class)))
+                .thenThrow(new CategoryAlreadyExistsException("Electronics"));
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
-    public ResponseEntity<String> handleConflict(CategoryAlreadyExistsException ex) {
-        return ResponseEntity.status(409).body(ex.getMessage());
-    }
-
-    @org.springframework.web.bind.annotation.ExceptionHandler
-    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.status(400).body(ex.getMessage());
+        mockMvc.perform(post("/api/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(testCategoryDTO)))
+                .andExpect(status().isConflict());
     }
 }

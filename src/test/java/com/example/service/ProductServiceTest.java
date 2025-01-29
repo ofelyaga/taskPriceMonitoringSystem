@@ -47,44 +47,56 @@ class ProductServiceTest {
         product.setCategory(category);
         return product;
     }
+    private Category createCategory(UUID id, String name) {
+        Category category = new Category();
+        category.setId(id);
+        category.setName(name);
+        return category;
+    }
 
     @Test
     void addProduct_ShouldSaveNewProduct() {
         UUID categoryId = UUID.randomUUID();
+        Category category = createCategory(categoryId, "Electronics");
         ProductDTO inputDTO = createProductDTO("Laptop", "Dell", categoryId);
-        Product savedProduct = createProductEntity(UUID.randomUUID(), "Laptop", "Dell", categoryId);
+        Product savedProduct = createProductEntity(UUID.randomUUID(), "Laptop", "Dell", category);
 
         when(productRepository.findByNameAndManufacturerAndCategoryId(
-            "Laptop", "Dell", categoryId))
-            .thenReturn(Optional.empty());
+                "Laptop", "Dell", categoryId))
+                .thenReturn(Optional.empty());
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
         ProductDTO result = productService.addProduct(inputDTO);
+
         assertNotNull(result.getId());
         assertEquals("Laptop", result.getName());
+        assertEquals(categoryId, result.getCategoryId());
         verify(productRepository).save(any(Product.class));
     }
 
     @Test
     void addProduct_ShouldThrowWhenProductExists() {
         UUID categoryId = UUID.randomUUID();
+        Category category = createCategory(categoryId, "Electronics");
         ProductDTO inputDTO = createProductDTO("Phone", "Apple", categoryId);
-        Product existing = createProductEntity(UUID.randomUUID(), "Phone", "Apple", categoryId);
+        Product existing = createProductEntity(UUID.randomUUID(), "Phone", "Apple", category);
 
         when(productRepository.findByNameAndManufacturerAndCategoryId(
-            "Phone", "Apple", categoryId))
-            .thenReturn(Optional.of(existing));
+                "Phone", "Apple", categoryId))
+                .thenReturn(Optional.of(existing));
 
         assertThrows(ProductAlreadyExistsException.class,
-            () -> productService.addProduct(inputDTO));
+                () -> productService.addProduct(inputDTO));
         verify(productRepository, never()).save(any());
     }
 
     @Test
     void updateProduct_ShouldUpdateExistingProduct() {
         UUID productId = UUID.randomUUID();
-        Product existing = createProductEntity(productId, "Old", "OldMan", UUID.randomUUID());
-        ProductDTO updateDTO = createProductDTO("New", "NewMan", existing.getCategoryId());
+        UUID categoryId = UUID.randomUUID();
+        Category category = createCategory(categoryId, "Electronics");
+        Product existing = createProductEntity(productId, "Old", "OldMan", category);
+        ProductDTO updateDTO = createProductDTO("New", "NewMan", categoryId);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existing));
         when(productRepository.save(existing)).thenReturn(existing);
@@ -93,6 +105,7 @@ class ProductServiceTest {
 
         assertEquals("New", result.getName());
         assertEquals("NewMan", result.getManufacturer());
+        assertEquals(categoryId, result.getCategoryId());
         verify(productRepository).save(existing);
     }
 
@@ -118,9 +131,10 @@ class ProductServiceTest {
     @Test
     void getProductsByCategory_ShouldReturnFilteredProducts() {
         UUID categoryId = UUID.randomUUID();
+        Category category = createCategory(categoryId, "Electronics");
         List<Product> products = List.of(
-            createProductEntity(UUID.randomUUID(), "P1", "M1", categoryId),
-            createProductEntity(UUID.randomUUID(), "P2", "M2", categoryId)
+                createProductEntity(UUID.randomUUID(), "P1", "M1", category),
+                createProductEntity(UUID.randomUUID(), "P2", "M2", category)
         );
         when(productRepository.findByCategoryId(categoryId)).thenReturn(products);
 
@@ -133,9 +147,10 @@ class ProductServiceTest {
     @Test
     void searchProductsByName_ShouldReturnMatchingProducts() {
         String searchTerm = "pro";
+        Category category = createCategory(UUID.randomUUID(), "Electronics");
         List<Product> products = List.of(
-            createProductEntity(UUID.randomUUID(), "Product 1", "M1", UUID.randomUUID()),
-            createProductEntity(UUID.randomUUID(), "PRODUCT 2", "M2", UUID.randomUUID())
+                createProductEntity(UUID.randomUUID(), "Product 1", "M1", category),
+                createProductEntity(UUID.randomUUID(), "PRODUCT 2", "M2", category)
         );
         when(productRepository.findByNameContainingIgnoreCase(searchTerm)).thenReturn(products);
 
@@ -148,9 +163,10 @@ class ProductServiceTest {
     @Test
     void filterProductsByManufacturer_ShouldReturnFilteredProducts() {
         String manufacturer = "tech";
+        Category category = createCategory(UUID.randomUUID(), "Electronics");
         List<Product> products = List.of(
-            createProductEntity(UUID.randomUUID(), "P1", "TechCorp", UUID.randomUUID()),
-            createProductEntity(UUID.randomUUID(), "P2", "MyTech", UUID.randomUUID())
+                createProductEntity(UUID.randomUUID(), "P1", "TechCorp", category),
+                createProductEntity(UUID.randomUUID(), "P2", "MyTech", category)
         );
         when(productRepository.findByManufacturerContainingIgnoreCase(manufacturer)).thenReturn(products);
 
@@ -158,14 +174,15 @@ class ProductServiceTest {
 
         assertEquals(2, result.size());
         assertTrue(result.stream()
-            .allMatch(dto -> dto.getManufacturer().toLowerCase().contains(manufacturer.toLowerCase())));
+                .allMatch(dto -> dto.getManufacturer().toLowerCase().contains(manufacturer.toLowerCase())));
     }
 
     @Test
     void getAllProducts_ShouldReturnAllProducts() {
+        Category category = createCategory(UUID.randomUUID(), "Electronics");
         List<Product> products = List.of(
-            createProductEntity(UUID.randomUUID(), "P1", "M1", UUID.randomUUID()),
-            createProductEntity(UUID.randomUUID(), "P2", "M2", UUID.randomUUID())
+                createProductEntity(UUID.randomUUID(), "P1", "M1", category),
+                createProductEntity(UUID.randomUUID(), "P2", "M2", category)
         );
         when(productRepository.findAll()).thenReturn(products);
 
