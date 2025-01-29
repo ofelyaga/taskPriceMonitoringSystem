@@ -24,7 +24,16 @@ public class PriceController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<PriceDTO> addPrice(@RequestBody PriceDTO priceDTO) {
+    public ResponseEntity<PriceDTO> addPrice(
+            @RequestParam("price") double price,
+            @RequestParam("product_id") UUID productId,
+            @RequestParam("shop_id") UUID shopId
+    ) {
+        PriceDTO priceDTO = new PriceDTO();
+        priceDTO.setDate(LocalDate.now());
+        priceDTO.setValue(price);
+        priceDTO.setProductId(productId);
+        priceDTO.setStoreId(shopId);
         PriceDTO savedPrice = priceService.addPrice(priceDTO);
         return new ResponseEntity<>(savedPrice, HttpStatus.CREATED);
     }
