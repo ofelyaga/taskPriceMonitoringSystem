@@ -11,27 +11,24 @@ Docker Compose 2.20+
 
 2. Сборка приложения
    1. Клонируйте репозиторий:
-
 git clone <ваш-репозиторий>
 cd taskpricemonitoringsystem
 
    2. Соберите WAR-файл:
-
-mvn clean package -DskipTests
+mvn clean package -DskipTests 
 Результат: target/taskpricemonitoringsystem-1.0-SNAPSHOT.war
 
 3. Docker-образ приложения
 
 Dockerfile:
 
-FROM tomcat:latest
-COPY target/taskpricemonitoringsystem-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/taskpricemonitoringsystem_war.war
-EXPOSE 8080
+FROM tomcat:latest 
+COPY target/taskpricemonitoringsystem-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/taskpricemonitoringsystem_war.war 
+EXPOSE 8080 
 CMD ["catalina.sh", "run"]
 
 Сборка образа:
-
-docker build -t myapp:latest .
+ocker build -t myapp:latest .
 
 4. Запуск с Docker Compose
 
@@ -49,25 +46,23 @@ ports:
 - "5432:5432"
 
 api:
-image: myapp
+image: myapp 
 depends_on:
-- db
-ports:
+- db 
+- ports:
 - "8080:8080"
 environment:
-DB_HOST: db
-DB_PASSWORD: root
-DB_USER: postgres
-DB_NAME: monitoring
+DB_HOST: db 
+DB_PASSWORD: root 
+DB_USER: postgres 
+DB_NAME: monitoring 
 build:
-dockerfile: ./Dockerfile
+dockerfile: ./Dockerfile 
 context: .
 
- 
 **Запуск:**
 
 mvn clean compile package
-
 docker-compose up --build
 
 5. Конфигурация приложения
@@ -77,9 +72,7 @@ docker-compose up --build
 URL: jdbc:postgresql://db:5432/monitoring
 
 Пользователь: postgres
-
 Пароль: root
-
 Переменные окружения:
 
 spring.datasource.url=${DB_HOST}
