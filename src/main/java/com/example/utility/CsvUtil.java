@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,7 +72,7 @@ public class CsvUtil {
                 priceDTO.setProductId(UUID.fromString(fields[1]));
                 priceDTO.setStoreId(UUID.fromString(fields[2]));
                 priceDTO.setValue(Double.parseDouble(fields[3]));
-                priceDTO.setDate(LocalDate.parse(fields[4], DateTimeFormatter.ofPattern("yyyy-MMM-dd")));
+                priceDTO.setDate(Date.from(Instant.parse(fields[4])));
 
                 Price price = PriceMapper.toEntity(priceDTO);
                 importedPrices.add(price);

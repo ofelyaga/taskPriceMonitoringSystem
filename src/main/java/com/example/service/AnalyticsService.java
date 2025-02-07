@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public class AnalyticsService {
 
             List<String> dates = priceTrends.stream()
                     .map(PriceDTO::getDate)
-                    .map(LocalDate::toString)
+                    .map(Date::toString)
                     .collect(Collectors.toList());
 
             List<Double> prices = priceTrends.stream()

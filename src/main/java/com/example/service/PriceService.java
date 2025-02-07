@@ -27,7 +27,7 @@ public class PriceService {
         this.priceRepository = priceRepository;
     }
 
-    public PriceDTO addPrice(PriceDTO priceDTO) {
+    public PriceDTO addPrice(PriceDTO priceDTO) throws Exception {
         try {
             logger.info("Запрос на добавление цены: {}", priceDTO);
             Price price = PriceMapper.toEntity(priceDTO);
@@ -36,7 +36,7 @@ public class PriceService {
             return PriceMapper.toDTO(savedPrice);
         } catch (Exception e) {
             logger.error("Ошибка при добавлении цены: {}", priceDTO, e);
-            throw new AppException("Ошибка при добавлении цены", e);
+            throw new Exception(e);
         }
     }
 

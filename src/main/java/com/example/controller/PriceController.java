@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,9 +30,9 @@ public class PriceController {
             @RequestParam("price") double price,
             @RequestParam("product_id") UUID productId,
             @RequestParam("shop_id") UUID shopId
-    ) {
+    ) throws Exception {
         PriceDTO priceDTO = new PriceDTO();
-        priceDTO.setDate(LocalDate.now());
+        priceDTO.setDate(new Date());
         priceDTO.setValue(price);
         priceDTO.setProductId(productId);
         priceDTO.setStoreId(shopId);
